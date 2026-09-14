@@ -5,45 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>Pickaxe Inferno</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Подключаем шрифты для идеального сходства -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Jura:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="game-container">
     <canvas id="gameCanvas"></canvas>
 
-    <!-- Нижняя панель управления (Аркадный пульт как на скриншоте) -->
+    <!-- Идеальная копия нижней панели -->
     <div id="arcade-controller">
       <div class="controller-top-bar">
-        <div class="brand-title">PICKAXE <span>INFERNO</span></div>
+        <div class="brand-title">PICKAXE <span class="inferno-text">INFERNO</span></div>
         <button id="btn-mode" class="mode-select">Classic ↗</button>
       </div>
 
       <div class="controller-grid">
-        <!-- Левый блок: Настройки / Авто -->
-        <div class="ctrl-col">
-          <button id="btn-settings" class="ctrl-btn btn-icon">⚙️</button>
-          <button id="btn-auto" class="ctrl-btn btn-purple">AUTO</button>
+        <div class="ctrl-col left-col">
+          <button class="icon-btn">⚙️</button>
+          <button class="auto-btn">AUTO</button>
         </div>
 
-        <!-- Центральный блок: Управление количеством / ставкой -->
-        <div class="ctrl-col ctrl-center">
-          <div class="dial-container">
-            <button id="btn-minus" class="ctrl-btn btn-round">-</button>
-            <div class="dial-wheel">
-              <span id="pickaxe-count-val">3</span>
-            </div>
-            <button id="btn-plus" class="ctrl-btn btn-round">+</button>
+        <div class="ctrl-col center-col">
+          <div class="dial-bg">
+            <button id="btn-minus" class="dial-btn">-</button>
+            <div class="dial-value"><span id="pickaxe-count-val">3</span></div>
+            <button id="btn-plus" class="dial-btn">+</button>
           </div>
         </div>
 
-        <!-- Правый блок: Скорость и звуки -->
-        <div class="ctrl-col">
-          <button id="btn-speed" class="ctrl-btn btn-icon">⏩</button>
-          <button id="btn-sound" class="ctrl-btn btn-icon">🔊</button>
+        <div class="ctrl-col right-col">
+          <button class="icon-btn blue-icon">⏩</button>
+          <button class="icon-btn">🔊</button>
         </div>
       </div>
 
-      <!-- Финансовая панель внизу -->
       <div class="stats-bar">
         <div class="stat-box">
           <span class="stat-label">БАЛАНС</span>
