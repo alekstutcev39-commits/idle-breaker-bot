@@ -124,3 +124,38 @@ class Block {
     Utils.drawPixelText(ctx, hpText, pos.x + this.w / 2, pos.y + this.h / 2, fontSize, '#ffffff', 'center');
   }
 }
+  // Заменить только метод draw внутри класса Block в js/block.js
+  draw(ctx, camera) {
+    if (!this.alive) return;
+
+    const shakeX = this.damageShake > 0.5 ? (Math.random() - 0.5) * this.damageShake : 0;
+    const pos = camera.worldToScreen(this.x + shakeX, this.y);
+
+    if (pos.y + this.h < -50 || pos.y > ctx.canvas.height + 50) return;
+
+    const flash = this.flashTimer > 0;
+    
+    // Рисуем 3D-плитку с помощью нашей новой функции
+    if (flash) {
+      Utils.draw3DBlock(ctx, pos.x, pos.y, this.w, this.h, '#ffffff');
+    } else {
+      let blockColor = this.color;
+      // Делаем цвета более похожими на скриншот
+      if (this.type === 'STONE') blockColor = '#8a8a8a';
+      if (this.type === 'ICE' || this.type === 'DIAMOND') blockColor = '#7dd3fc';
+      
+      Utils.draw3DBlock(ctx, pos.x, pos.y, this.w, this.h, blockColor);
+      
+      if (this.explosive) {
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+        ctx.strokeRect(pos.x + 4, pos.y + 4, this.w - 8, this.h - 8);
+        Utils.drawPixelText(ctx, 'TNT', pos.x + this.w/2, pos.y + this.h/2, this.w/3, '#fff', 'center');
+      }
+    }
+
+    // Текст HP по центру (маленьким шрифтом, как на скрине)
+    if (!this.explosive) {
+      const hpText = Math.ceil(this.hp).toString();
+      Utils.drawPixelText(ctx, hpText, pos.x + this.w / 2, pos.y + this.h / 2, this.w / 3.5, '#ffffff', 'center');
+    }
+  }
