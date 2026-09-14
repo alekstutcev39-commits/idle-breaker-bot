@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>Idle Mine Breaker</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Кнопка магазина/улучшений поверх канваса -->
+  <div id="ui-overlay">
+    <div id="upgrade-panel" class="hidden">
+      <div class="panel-header">
+        <h2>⛏️ Улучшения</h2>
+        <button id="close-panel" class="btn-close">✕</button>
+      </div>
+      <div id="upgrade-list"></div>
+    </div>
+    <button id="btn-upgrade" class="ui-btn">🔧</button>
+    <button id="btn-add-pickaxe" class="ui-btn ui-btn-right">➕⛏️</button>
+  </div>
+
+  <!-- Подключение всех систем игры -->
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/block.js"></script>
+  <script src="js/pickaxe.js"></script>
+  <script src="js/particle.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/portal.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
