@@ -86,3 +86,27 @@ const Utils = {
     }
   }
 };
+  // ДОБАВИТЬ ЭТО В КОНЕЦ ФАЙЛА js/utils.js (внутри объекта Utils)
+  draw3DBlock(ctx, x, y, w, h, color) {
+    // Основной цвет
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
+    
+    const bevel = w * 0.15; // толщина грани
+    
+    // Верхняя светлая грань (блик)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w - bevel, y + bevel); ctx.lineTo(x + bevel, y + bevel); ctx.fill();
+    
+    // Левая светлая грань
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + bevel, y + bevel); ctx.lineTo(x + bevel, y + h - bevel); ctx.lineTo(x, y + h); ctx.fill();
+    
+    // Нижняя темная грань (тень)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + bevel, y + h - bevel); ctx.lineTo(x + w - bevel, y + h - bevel); ctx.lineTo(x + w, y + h); ctx.fill();
+    
+    // Правая темная грань
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w - bevel, y + bevel); ctx.lineTo(x + w - bevel, y + h - bevel); ctx.lineTo(x + w, y + h); ctx.fill();
+  }
