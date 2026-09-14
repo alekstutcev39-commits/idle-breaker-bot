@@ -3,27 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <title>Idle Mine Breaker</title>
+  <title>Pickaxe Inferno</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
 
-  <!-- Кнопка магазина/улучшений поверх канваса -->
-  <div id="ui-overlay">
-    <div id="upgrade-panel" class="hidden">
-      <div class="panel-header">
-        <h2>⛏️ Улучшения</h2>
-        <button id="close-panel" class="btn-close">✕</button>
+    <!-- Нижняя панель управления (Аркадный пульт как на скриншоте) -->
+    <div id="arcade-controller">
+      <div class="controller-top-bar">
+        <div class="brand-title">PICKAXE <span>INFERNO</span></div>
+        <button id="btn-mode" class="mode-select">Classic ↗</button>
       </div>
-      <div id="upgrade-list"></div>
+
+      <div class="controller-grid">
+        <!-- Левый блок: Настройки / Авто -->
+        <div class="ctrl-col">
+          <button id="btn-settings" class="ctrl-btn btn-icon">⚙️</button>
+          <button id="btn-auto" class="ctrl-btn btn-purple">AUTO</button>
+        </div>
+
+        <!-- Центральный блок: Управление количеством / ставкой -->
+        <div class="ctrl-col ctrl-center">
+          <div class="dial-container">
+            <button id="btn-minus" class="ctrl-btn btn-round">-</button>
+            <div class="dial-wheel">
+              <span id="pickaxe-count-val">3</span>
+            </div>
+            <button id="btn-plus" class="ctrl-btn btn-round">+</button>
+          </div>
+        </div>
+
+        <!-- Правый блок: Скорость и звуки -->
+        <div class="ctrl-col">
+          <button id="btn-speed" class="ctrl-btn btn-icon">⏩</button>
+          <button id="btn-sound" class="ctrl-btn btn-icon">🔊</button>
+        </div>
+      </div>
+
+      <!-- Финансовая панель внизу -->
+      <div class="stats-bar">
+        <div class="stat-box">
+          <span class="stat-label">БАЛАНС</span>
+          <span id="val-balance" class="stat-value">78,800.00</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">СТАВКА</span>
+          <span id="val-bet" class="stat-value">0.00</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">ВЫИГРЫШ</span>
+          <span id="val-win" class="stat-value gold">666.00</span>
+        </div>
+      </div>
     </div>
-    <button id="btn-upgrade" class="ui-btn">🔧</button>
-    <button id="btn-add-pickaxe" class="ui-btn ui-btn-right">➕⛏️</button>
   </div>
 
-  <!-- Подключение всех систем игры -->
   <script src="js/config.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/camera.js"></script>
