@@ -10,7 +10,7 @@ class Block {
     this.w = blockSize;
     this.h = blockSize;
 
-    const def = CONFIG.BLOCK_TYPES[type];
+    const def = CONFIG.BLOCK_TYPES[type] || CONFIG.BLOCK_TYPES.STONE;
     this.maxHp = def.hp;
     this.hp = def.hp;
     this.reward = def.reward;
@@ -30,8 +30,8 @@ class Block {
 
   takeDamage(amount) {
     this.hp -= amount;
-    this.flashTimer = 0.1;
-    this.damageShake = 3;
+    this.flashTimer = 0.08;
+    this.damageShake = 4;
     if (this.hp <= 0) {
       this.hp = 0;
       this.alive = false;
@@ -41,7 +41,7 @@ class Block {
 
   update(dt) {
     if (this.flashTimer > 0) this.flashTimer -= dt;
-    if (this.damageShake > 0) this.damageShake *= 0.85;
+    if (this.damageShake > 0) this.damageShake *= 0.8;
   }
 
   draw(ctx, camera) {
@@ -53,43 +53,74 @@ class Block {
     if (pos.y + this.h < -50 || pos.y > ctx.canvas.height + 50) return;
 
     const flash = this.flashTimer > 0;
-    const fill = flash ? '#ffffff' : this.color;
-    const border = flash ? '#dddddd' : this.borderColor;
 
-    Utils.drawBlock(ctx, pos.x, pos.y, this.w, this.h, fill, border, 2);
+    // Отрисовка пиксельной текстуры блока
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
 
-    const cx = pos.x + this.w / 2;
-    const cy = pos.y + this.h / 2;
+    if (flash) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, this.w, this.h);
+    } else {
+      // Базовый цвет блока
+      ctx.fillStyle = this.color;
+      ctx.fillRect(0, 0, this.w, this.h);
 
-    if (this.explosive) {
-      Utils.drawPixelText(ctx, 'TNT', cx, cy - 6, Math.max(10, this.w / 4), '#fff', 'center');
-    } else if (this.isChest) {
-      Utils.drawPixelText(ctx, '📦', cx, cy - 6, Math.max(10, this.w / 3), '#fff', 'center');
-    } else if (this.speedBuff) {
-      Utils.drawPixelText(ctx, '⬆', cx, cy - 6, Math.max(12, this.w / 3), '#fff', 'center');
-    } else if (this.isMonster) {
-      const eyeSize = Math.max(3, this.w / 10);
-      ctx.fillStyle = '#000';
-      ctx.fillRect(pos.x + this.w * 0.3, pos.y + this.h * 0.3, eyeSize, eyeSize);
-      ctx.fillRect(pos.x + this.w * 0.6, pos.y + this.h * 0.3, eyeSize, eyeSize);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(pos.x + this.w * 0.3 + 1, pos.y + this.h * 0.3, eyeSize / 2, eyeSize / 2);
-      ctx.fillRect(pos.x + this.w * 0.6 + 1, pos.y + this.h * 0.3, eyeSize / 2, eyeSize / 2);
+      // Пиксельная обводка (Minecraft style)
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.fillRect(0, 0, this.w, 3);
+      ctx.fillRect(0, 0, 3, this.h);
+
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(0, this.h - 3, this.w, 3);
+      ctx.fillRect(this.w - 3, 0, 3, this.h);
+
+      // Внутренний паттерн (руда/минерал)
+      ctx.fillStyle = this.borderColor;
+      const s = this.w / 4;
+      ctx.fillRect(s, s, s, s);
+      ctx.fillRect(s * 2, s * 2, s, s);
+
+      // Специальные иконки
+      if (this.explosive) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(4, 4, this.w - 8, this.h - 8);
+        ctx.fillStyle = '#e74c3c';
+        ctx.fillRect(6, 6, this.w - 12, this.h - 12);
+        Utils.drawPixelText(ctx, 'TNT', this.w / 2, this.h / 2 - 2, Math.max(9, this.w / 3.5), '#fff', 'center');
+      } else if (this.speedBuff) {
+        Utils.drawPixelText(ctx, '⬆', this.w / 2, this.h / 2 - 2, Math.max(14, this.w / 2), '#fff', 'center');
+      } else if (this.isChest) {
+        ctx.fillStyle = '#8b4513';
+        ctx.fillRect(6, 6, this.w - 12, this.h - 12);
+        ctx.fillStyle = '#ffd700';
+        ctx.fillRect(this.w / 2 - 2, this.h / 2 - 2, 4, 4);
+      }
     }
 
-    const hpText = Math.ceil(this.hp).toString();
-    const fontSize = Math.max(8, this.w / 5);
-    Utils.drawPixelText(ctx, hpText, cx, cy + (this.explosive || this.isChest || this.speedBuff || this.isMonster ? 8 : 0), fontSize, '#fff', 'center');
-
-    const barH = 3;
-    const barW = this.w - 6;
-    const barX = pos.x + 3;
-    const barY = pos.y + this.h - barH - 2;
+    // ТРЕЩИНЫ НА БЛОКЕ ПРИ УРОНЕ (как на скриншоте)
     const hpRatio = this.hp / this.maxHp;
+    if (hpRatio < 0.75 && !flash) {
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(this.w * 0.2, this.h * 0.1);
+      ctx.lineTo(this.w * 0.5, this.h * 0.4);
+      ctx.lineTo(this.w * 0.3, this.h * 0.8);
 
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(barX, barY, barW, barH);
-    ctx.fillStyle = hpRatio > 0.5 ? '#2ecc71' : hpRatio > 0.25 ? '#f39c12' : '#e74c3c';
-    ctx.fillRect(barX, barY, barW * hpRatio, barH);
+      if (hpRatio < 0.4) {
+        ctx.moveTo(this.w * 0.8, this.h * 0.2);
+        ctx.lineTo(this.w * 0.5, this.h * 0.5);
+        ctx.lineTo(this.w * 0.7, this.h * 0.9);
+      }
+      ctx.stroke();
+    }
+
+    ctx.restore();
+
+    // Текст HP над/внутри блока
+    const hpText = Math.ceil(this.hp).toString();
+    const fontSize = Math.max(9, this.w / 4);
+    Utils.drawPixelText(ctx, hpText, pos.x + this.w / 2, pos.y + this.h / 2, fontSize, '#ffffff', 'center');
   }
 }
